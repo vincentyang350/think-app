@@ -11,9 +11,9 @@
 
         /* ===== 暗色主题（复古工业风） ===== */
         :root {
-            --bg: #0a0a0a;
-            --surface: #141414;
-            --surface2: #1c1c1c;
+            --bg: #000000;
+            --surface: #111111;
+            --surface2: #191919;
             --surface3: #222222;
             --border: #2a2a2a;
             --border-light: #333333;
@@ -23,16 +23,16 @@
             --text-dimmer: #505050;
             --accent: #4ade80;
             --accent-dim: #22c55e;
-            --accent-glow: rgba(74, 222, 128, 0.15);
-            --accent-glow-strong: rgba(74, 222, 128, 0.35);
+            --accent-glow: rgba(74, 222, 128, 0.12);
+            --accent-glow-strong: rgba(74, 222, 128, 0.3);
             --red: #f87171;
             --blue: #60a5fa;
             --orange: #fb923c;
             --purple: #a78bfa;
-            --radius: 16px;
-            --radius-lg: 24px;
-            --radius-sm: 10px;
-            --nav-h: 64px;
+            --radius: 14px;
+            --radius-lg: 20px;
+            --radius-sm: 8px;
+            --nav-h: 96px;
             --font-ui: 'Noto Sans SC', -apple-system, 'PingFang SC', sans-serif;
             --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
         }
@@ -84,13 +84,16 @@
             padding: 14px 20px;
             position: sticky;
             top: 0;
-            background: rgba(10,10,10,0.92);
+            background: rgba(0,0,0,0.92);
             backdrop-filter: blur(16px) saturate(1.2);
             z-index: 100;
             border-bottom: 1px solid var(--border);
         }
         body.light .top-bar {
             background: rgba(245,240,235,0.92);
+        }
+        body.light .detail-header { 
+            background: rgba(245,240,235,0.92); 
         }
         .top-bar-title { font-size: 14px; color: var(--text-dim); letter-spacing: 1px; }
         .top-bar-actions { display: flex; gap: 10px; }
@@ -111,85 +114,83 @@
             border-color: var(--border-light);
         }
         .icon-btn.accent-btn {
-            background: var(--accent);
-            color: var(--bg);
-            border-color: var(--accent);
-            box-shadow: 0 0 16px var(--accent-glow);
+            background: var(--surface);
+            color: var(--accent);
+            border-color: var(--accent-dim);
         }
         .icon-btn.accent-btn:hover { 
-            opacity: 0.9;
-            box-shadow: 0 0 24px var(--accent-glow-strong);
+            background: var(--surface2);
+            border-color: var(--accent);
         }
 
         /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            height: var(--nav-h);
-            background: rgba(10,10,10,0.96);
-            backdrop-filter: blur(16px) saturate(1.2);
-            border-top: 1px solid var(--border);
+            background: var(--bg);
+            border-top: none;
             display: flex;
+            flex-direction: column;
             z-index: 200;
+            padding-bottom: env(safe-area-inset-bottom, 0);
         }
         body.light .bottom-nav {
-            background: rgba(245,240,235,0.96);
+            background: var(--bg);
         }
-        .nav-item {
+        /* FAB 行 — 在菜单栏上方 */
+        .fab-row {
+            display: flex;
+            justify-content: center;
+            padding: 12px 20px 10px;
+        }
+        .fab {
+            width: 44px; height: 44px;
+            border-radius: var(--radius-sm);
+            background: var(--surface);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 300;
+        }
+        .fab:hover { 
+            border-color: var(--border-light);
+            color: var(--text-bright);
+            background: var(--surface2);
+        }
+        /* 菜单栏 — 灰色线条框起来 */
+        .nav-tabs {
+            display: flex;
+            margin: 0 16px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+        .nav-tab {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 3px;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.2s;
             color: var(--text-dimmer);
             font-size: 10px;
             letter-spacing: 0.5px;
             font-family: var(--font-mono);
-            padding-bottom: env(safe-area-inset-bottom, 0);
+            padding: 10px 0 8px;
+            border-right: 1px solid var(--border);
         }
-        .nav-item.active { 
+        .nav-tab:last-child { border-right: none; }
+        .nav-tab.active { 
             color: var(--accent); 
-            text-shadow: 0 0 12px var(--accent-glow-strong);
         }
-        .nav-item:hover { color: var(--text-dim); }
-        .nav-icon { font-size: 18px; line-height: 1; }
-
-        /* ===== FAB ===== */
-        .fab-wrap {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-bottom: env(safe-area-inset-bottom, 0);
-        }
-        .fab {
-            width: 52px; height: 52px;
-            border-radius: var(--radius);
-            background: var(--accent);
-            color: var(--bg);
-            border: none;
-            font-size: 24px;
-            font-weight: 300;
-            cursor: pointer;
-            margin-top: -20px;
-            box-shadow: 
-                0 0 20px var(--accent-glow),
-                0 0 60px var(--accent-glow),
-                0 4px 16px rgba(0,0,0,0.4);
-            transition: all 0.25s;
-            display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-mono);
-        }
-        .fab:hover { 
-            transform: scale(1.06);
-            box-shadow: 
-                0 0 28px var(--accent-glow-strong),
-                0 0 80px var(--accent-glow),
-                0 6px 20px rgba(0,0,0,0.5);
-        }
+        .nav-tab:hover:not(.active) { color: var(--text-dim); }
+        .nav-tab-icon { font-size: 16px; line-height: 1; }
 
         /* ===== SCROLL CONTENT ===== */
         .scroll-content {
@@ -214,29 +215,40 @@
             position: relative;
             overflow: hidden;
             transition: all 0.25s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.03);
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                inset 0 -1px 0 rgba(0,0,0,0.2),
+                0 2px 8px rgba(0,0,0,0.2);
+            /* 纸纹理效果 */
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.015) 0%, transparent 70%);
         }
         body.light .card {
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5);
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.6),
+                inset 0 -1px 0 rgba(0,0,0,0.05),
+                0 2px 12px rgba(0,0,0,0.06);
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.3) 0%, transparent 70%);
         }
         .card:hover { 
             border-color: var(--border-light);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03);
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                inset 0 -1px 0 rgba(0,0,0,0.2),
+                0 4px 16px rgba(0,0,0,0.25);
         }
         .card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-glow-strong), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
         }
-        .card:hover::before { opacity: 1; }
 
         .card-label {
             font-size: 10px;
-            color: var(--accent);
+            color: var(--text-dim);
             letter-spacing: 3px;
             text-transform: uppercase;
             margin-bottom: 16px;
@@ -249,13 +261,12 @@
         .pulse-dot {
             width: 6px; height: 6px;
             border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 8px var(--accent-glow-strong);
+            background: var(--text-dim);
             animation: pulse 2s infinite;
         }
         @keyframes pulse { 
-            0%,100%{opacity:1; box-shadow: 0 0 8px var(--accent-glow-strong)} 
-            50%{opacity:0.3; box-shadow: 0 0 2px var(--accent-glow)} 
+            0%,100%{opacity:1;} 
+            50%{opacity:0.3;} 
         }
 
         .card-title {
@@ -306,11 +317,10 @@
             letter-spacing: 0.3px;
         }
         .pill.active {
-            background: var(--accent);
-            color: var(--bg);
-            border-color: var(--accent);
-            font-weight: 600;
-            box-shadow: 0 0 16px var(--accent-glow);
+            background: var(--surface);
+            color: var(--accent);
+            border-color: var(--accent-dim);
+            font-weight: 500;
         }
         .pill:hover:not(.active) { 
             border-color: var(--border-light);
@@ -337,18 +347,16 @@
         .action-btn:hover { 
             border-color: var(--accent-dim); 
             color: var(--accent);
-            box-shadow: 0 0 12px var(--accent-glow);
         }
         .action-btn.primary {
-            background: var(--accent);
-            color: var(--bg);
-            border-color: var(--accent);
-            font-weight: 600;
-            box-shadow: 0 0 16px var(--accent-glow);
+            background: var(--surface);
+            color: var(--accent);
+            border-color: var(--accent-dim);
+            font-weight: 500;
         }
         .action-btn.primary:hover { 
-            opacity: 0.9;
-            box-shadow: 0 0 24px var(--accent-glow-strong);
+            background: var(--surface2);
+            border-color: var(--accent);
         }
 
         /* ===== META TAGS ===== */
@@ -365,7 +373,6 @@
         .meta-tag.accent { 
             color: var(--accent-dim); 
             border-color: var(--accent-dim);
-            box-shadow: 0 0 8px var(--accent-glow);
         }
 
         /* ===== STAT CARDS ===== */
@@ -382,7 +389,6 @@
             font-weight: 700; 
             color: var(--accent);
             font-family: var(--font-mono);
-            text-shadow: 0 0 20px var(--accent-glow);
         }
         .stat-label { 
             font-size: 10px; 
@@ -404,9 +410,8 @@
             transition: all 0.25s;
         }
         .ai-card:hover { 
-            border-color: var(--accent-dim);
+            border-color: var(--border-light);
             background: var(--surface2);
-            box-shadow: 0 0 20px var(--accent-glow);
         }
         .ai-card-icon { font-size: 20px; margin-bottom: 10px; }
         .ai-card-name { 
@@ -454,12 +459,9 @@
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            background: rgba(10,10,10,0.92);
+            background: rgba(0,0,0,0.92);
             backdrop-filter: blur(16px) saturate(1.2);
             z-index: 10;
-        }
-        body.light .detail-header { 
-            background: rgba(245,240,235,0.92); 
         }
         .back-btn {
             width: 36px; height: 36px;
@@ -532,7 +534,12 @@
             margin-bottom: 12px;
             cursor: pointer;
             transition: all 0.25s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                inset 0 -1px 0 rgba(0,0,0,0.2),
+                0 2px 8px rgba(0,0,0,0.2);
+            background-image: 
+                radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.015) 0%, transparent 70%);
         }
         .project-card:hover { 
             border-color: var(--border-light); 
@@ -575,7 +582,6 @@
             .top-nav-desktop .nav-link.active {
                 color: var(--accent);
                 border-color: var(--accent);
-                text-shadow: 0 0 12px var(--accent-glow);
             }
         }
         @media (max-width: 767px) {
@@ -621,7 +627,7 @@
         <!-- ===== TOP BAR ===== -->
         <div class="top-bar">
             <div style="display:flex;align-items:center;gap:16px;">
-                <span style="font-size:16px;font-weight:700;color:var(--accent);cursor:pointer;letter-spacing:1px;" onclick="switchScreen('home')">Think</span>
+                <span style="font-size:16px;font-weight:700;color:var(--text-bright);cursor:pointer;letter-spacing:1px;" onclick="switchScreen('home')">Think</span>
                 <!-- 电脑端导航 -->
                 <div class="top-nav-desktop">
                     <span class="nav-link" data-screen="home" onclick="switchScreen('home')">首页</span>
@@ -649,11 +655,11 @@
                     <div style="margin-bottom:24px;">
                         <div style="font-size:11px;color:var(--text-dimmer);letter-spacing:1px;margin-bottom:4px;" id="home-date"></div>
                         <div style="font-size:13px;color:var(--text-dim);">
-                            <span>金句 <span style="color:var(--accent)" id="stat-quotes">0</span></span>
+                            <span>金句 <span style="color:var(--text-bright)" id="stat-quotes">0</span></span>
                             <span style="margin:0 8px;">·</span>
-                            <span>闪念 <span style="color:var(--accent)" id="stat-flashes">0</span></span>
+                            <span>闪念 <span style="color:var(--text-bright)" id="stat-flashes">0</span></span>
                             <span style="margin:0 8px;">·</span>
-                            <span>笔记 <span style="color:var(--accent)" id="stat-notes">0</span></span>
+                            <span>笔记 <span style="color:var(--text-bright)" id="stat-notes">0</span></span>
                         </div>
                     </div>
 
@@ -669,12 +675,12 @@
 
                     <!-- 待处理 -->
                     <div class="card" id="home-pending" style="cursor:pointer;" onclick="switchScreen('flashes')">
-                        <div class="card-label" style="color:var(--orange);">待处理</div>
+                        <div class="card-label" style="color:var(--text-dim);">待处理</div>
                         <div style="display:flex;align-items:center;justify-content:space-between;">
-                            <span style="font-size:14px;color:var(--text);">闪念收件箱</span>
-                            <span style="font-size:24px;font-weight:700;color:var(--orange);" id="pending-count">0</span>
+                            <span style="font-size:14px;color:var(--text-bright);">闪念收件箱</span>
+                            <span style="font-size:24px;font-weight:700;color:var(--text-dim);" id="pending-count">0</span>
                         </div>
-                        <div style="font-size:12px;color:var(--text-dimmer);margin-top:4px;">条闪念等待处理 →</div>
+                        <div style="font-size:12px;color:var(--text-dimmer);margin-top:4px;">条闪念等待处理</div>
                     </div>
 
                     <!-- 最近项目（电脑端） -->
@@ -901,24 +907,30 @@
 
         <!-- ===== BOTTOM NAV (手机) ===== -->
         <nav class="bottom-nav">
-            <div class="nav-item" data-screen="home" onclick="switchScreen('home')">
-                <div class="nav-icon">⌂</div>
-                <div>首页</div>
-            </div>
-            <div class="nav-item" data-screen="flashes" onclick="switchScreen('flashes')">
-                <div class="nav-icon">⚡</div>
-                <div>闪念</div>
-            </div>
-            <div class="fab-wrap">
+            <div class="fab-row">
                 <button class="fab" onclick="switchScreen('input')">+</button>
             </div>
-            <div class="nav-item" data-screen="quotes" onclick="switchScreen('quotes')">
-                <div class="nav-icon">✦</div>
-                <div>金句</div>
-            </div>
-            <div class="nav-item" data-screen="notes" onclick="switchScreen('notes')">
-                <div class="nav-icon">◈</div>
-                <div>笔记</div>
+            <div class="nav-tabs">
+                <div class="nav-tab" data-screen="home" onclick="switchScreen('home')">
+                    <div class="nav-tab-icon">⌂</div>
+                    <div>首页</div>
+                </div>
+                <div class="nav-tab" data-screen="flashes" onclick="switchScreen('flashes')">
+                    <div class="nav-tab-icon">⚡</div>
+                    <div>闪念</div>
+                </div>
+                <div class="nav-tab" data-screen="quotes" onclick="switchScreen('quotes')">
+                    <div class="nav-tab-icon">✦</div>
+                    <div>金句</div>
+                </div>
+                <div class="nav-tab" data-screen="notes" onclick="switchScreen('notes')">
+                    <div class="nav-tab-icon">◈</div>
+                    <div>笔记</div>
+                </div>
+                <div class="nav-tab" data-screen="collections" onclick="switchScreen('collections')">
+                    <div class="nav-tab-icon">☰</div>
+                    <div>项目</div>
+                </div>
             </div>
         </nav>
     </div>
@@ -985,7 +997,7 @@
             const target = document.getElementById('screen-' + name);
             if (target) target.classList.add('active');
             // 更新导航高亮
-            document.querySelectorAll('.nav-item').forEach(n => {
+            document.querySelectorAll('.nav-tab').forEach(n => {
                 n.classList.toggle('active', n.dataset.screen === name);
             });
             document.querySelectorAll('.top-nav-desktop .nav-link').forEach(n => {
