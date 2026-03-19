@@ -12,13 +12,13 @@
         /* ===== 暗色主题（复古工业风） ===== */
         :root {
             --bg: #000000;
-            --surface: #111111;
+            --surface: #0f0f0f;
             --surface2: #191919;
             --surface3: #222222;
             --border: #2a2a2a;
             --border-light: #333333;
-            --text: #d4d4d4;
-            --text-bright: #f0f0f0;
+            --text: #dfdfdf;
+            --text-bright: #dfdfdf;
             --text-dim: #808080;
             --text-dimmer: #505050;
             --accent: #4ade80;
@@ -29,9 +29,9 @@
             --blue: #60a5fa;
             --orange: #fb923c;
             --purple: #a78bfa;
-            --radius: 14px;
-            --radius-lg: 20px;
-            --radius-sm: 8px;
+            --radius: 24px;
+            --radius-lg: 24px;
+            --radius-sm: 12px;
             --nav-h: 96px;
             --font-ui: 'Noto Sans SC', -apple-system, 'PingFang SC', sans-serif;
             --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
@@ -145,29 +145,31 @@
         }
         .fab {
             width: 44px; height: 44px;
-            border-radius: var(--radius-sm);
-            background: var(--surface);
-            color: var(--text-dim);
-            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: linear-gradient(180deg, #2a2a2a 0%, #151515 100%);
+            color: var(--accent);
+            border: none;
             font-size: 22px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex; align-items: center; justify-content: center;
             font-family: var(--font-mono);
             font-weight: 300;
+            text-shadow: 0 0 12px rgba(74, 222, 128, 0.6), 0 0 24px rgba(74, 222, 128, 0.3);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
         }
         .fab:hover { 
-            border-color: var(--border-light);
-            color: var(--text-bright);
-            background: var(--surface2);
+            background: linear-gradient(180deg, #333333 0%, #1a1a1a 100%);
         }
-        /* 菜单栏 — 灰色线条框起来 */
+        /* 菜单栏 — 2px 边框全圆角包裹，胶囊与外框分开 */
         .nav-tabs {
             display: flex;
             margin: 0 16px 12px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
+            border: 2px solid #444;
+            border-radius: 999px;
+            background: transparent;
+            padding: 4px;
+            gap: 2px;
         }
         .nav-tab {
             flex: 1;
@@ -177,17 +179,21 @@
             justify-content: center;
             gap: 3px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             color: var(--text-dimmer);
             font-size: 10px;
             letter-spacing: 0.5px;
             font-family: var(--font-mono);
             padding: 10px 0 8px;
-            border-right: 1px solid var(--border);
+            border-radius: 999px;
+            border: none;
+            position: relative;
         }
-        .nav-tab:last-child { border-right: none; }
-        .nav-tab.active { 
-            color: var(--accent); 
+        .nav-tab.active {
+            color: var(--accent);
+            background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(0,0,0,0.3), 0 0 8px rgba(74, 222, 128, 0.1);
+            text-shadow: 0 0 12px rgba(74, 222, 128, 0.6), 0 0 24px rgba(74, 222, 128, 0.3);
         }
         .nav-tab:hover:not(.active) { color: var(--text-dim); }
         .nav-tab-icon { font-size: 16px; line-height: 1; }
@@ -208,8 +214,8 @@
         /* ===== CARD ===== */
         .card {
             background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border: none;
+            border-radius: 24px;
             padding: 24px;
             margin-bottom: 14px;
             position: relative;
@@ -217,26 +223,20 @@
             transition: all 0.25s;
             box-shadow: 
                 inset 0 1px 0 rgba(255,255,255,0.04),
-                inset 0 -1px 0 rgba(0,0,0,0.2),
-                0 2px 8px rgba(0,0,0,0.2);
-            /* 纸纹理效果 */
-            background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.015) 0%, transparent 70%);
+                inset 0 -1px 0 rgba(0,0,0,0.25),
+                0 0 20px rgba(0,0,0,0.3);
         }
         body.light .card {
             box-shadow: 
                 inset 0 1px 0 rgba(255,255,255,0.6),
                 inset 0 -1px 0 rgba(0,0,0,0.05),
                 0 2px 12px rgba(0,0,0,0.06);
-            background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.3) 0%, transparent 70%);
         }
         .card:hover { 
-            border-color: var(--border-light);
             box-shadow: 
                 inset 0 1px 0 rgba(255,255,255,0.06),
-                inset 0 -1px 0 rgba(0,0,0,0.2),
-                0 4px 16px rgba(0,0,0,0.25);
+                inset 0 -1px 0 rgba(0,0,0,0.25),
+                0 0 30px rgba(0,0,0,0.4);
         }
         .card::before {
             content: '';
@@ -257,6 +257,25 @@
             gap: 8px;
             font-family: var(--font-mono);
             font-weight: 500;
+        }
+        /* 快速记录标签 — 大圆角框 + #0f0f0f 背景 + 绿色发光字 */
+        .card-quick .card-label {
+            display: inline-flex;
+            background: rgb(15, 15, 15);
+            border-radius: 999px;
+            padding: 6px 16px;
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(74, 222, 128, 0.5), 0 0 20px rgba(74, 222, 128, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3);
+        }
+        /* 待处理标签 — 同样大圆角框，灰色字（未选中状态） */
+        .card-pending .card-label {
+            display: inline-flex;
+            background: rgb(15, 15, 15);
+            border-radius: 999px;
+            padding: 6px 16px;
+            color: rgb(135, 135, 135);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.3);
         }
         .pulse-dot {
             width: 6px; height: 6px;
@@ -329,6 +348,53 @@
 
         /* ===== ACTION BUTTONS ===== */
         .action-row { display: flex; gap: 10px; margin-top: 16px; }
+        /* Price 样式按钮 — 存闪念/存金句 */
+        .action-row.price-style {
+            gap: 0;
+            border-radius: 999px;
+            background: #0f0f0f;
+            overflow: hidden;
+            box-shadow: 0 0 16px rgba(255, 255, 255, 0.06), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .action-btn-price {
+            flex: 1;
+            padding: 14px;
+            background: transparent;
+            border: none;
+            border-right: 1px solid #222;
+            font-size: 13px;
+            color: rgb(135, 135, 135);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.25s;
+            font-family: var(--font-mono);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .action-btn-price:last-child { border-right: none; }
+        .action-btn-price:hover { 
+            color: rgb(180, 180, 180);
+        }
+        /* Buy 样式按钮 — 输入想法 */
+        .action-btn-buy {
+            padding: 14px 28px;
+            background: linear-gradient(180deg, #2a2a2a 0%, #151515 100%);
+            border: none;
+            border-radius: 999px;
+            font-size: 13px;
+            color: var(--accent);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.25s;
+            font-family: var(--font-mono);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 12px rgba(74, 222, 128, 0.6), 0 0 24px rgba(74, 222, 128, 0.3);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        .action-btn-buy:hover {
+            background: linear-gradient(180deg, #333333 0%, #1a1a1a 100%);
+        }
         .action-btn {
             flex: 1;
             padding: 12px;
@@ -381,8 +447,12 @@
             text-align: center;
             padding: 16px 8px;
             background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
+            border: none;
+            border-radius: 24px;
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                inset 0 -1px 0 rgba(0,0,0,0.25),
+                0 0 20px rgba(0,0,0,0.3);
         }
         .stat-num { 
             font-size: 24px; 
@@ -403,14 +473,17 @@
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .ai-card {
             background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border: none;
+            border-radius: 24px;
             padding: 20px;
             cursor: pointer;
             transition: all 0.25s;
+            box-shadow: 
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                inset 0 -1px 0 rgba(0,0,0,0.25),
+                0 0 20px rgba(0,0,0,0.3);
         }
         .ai-card:hover { 
-            border-color: var(--border-light);
             background: var(--surface2);
         }
         .ai-card-icon { font-size: 20px; margin-bottom: 10px; }
@@ -528,22 +601,19 @@
         /* ===== PROJECT CARD ===== */
         .project-card {
             background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border: none;
+            border-radius: 24px;
             padding: 20px;
             margin-bottom: 12px;
             cursor: pointer;
             transition: all 0.25s;
             box-shadow: 
                 inset 0 1px 0 rgba(255,255,255,0.04),
-                inset 0 -1px 0 rgba(0,0,0,0.2),
-                0 2px 8px rgba(0,0,0,0.2);
-            background-image: 
-                radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.015) 0%, transparent 70%);
+                inset 0 -1px 0 rgba(0,0,0,0.25),
+                0 0 20px rgba(0,0,0,0.3);
         }
         .project-card:hover { 
-            border-color: var(--border-light); 
-            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
         }
         .project-name { 
             font-size: 16px; 
@@ -664,21 +734,21 @@
                     </div>
 
                     <!-- 快速记录 -->
-                    <div class="card" id="home-quick-record">
-                        <div class="card-label"><span class="pulse-dot"></span> 快速记录</div>
+                    <div class="card card-quick" id="home-quick-record">
+                        <div class="card-label"><span class="pulse-dot" style="background:var(--accent);"></span> 快速记录</div>
                         <textarea id="home-input" rows="3" placeholder="说出你的想法、观察或判断..."></textarea>
-                        <div class="action-row">
-                            <button class="action-btn primary" onclick="saveHomeFlash()">存闪念</button>
-                            <button class="action-btn" onclick="saveHomeQuote()">存金句</button>
+                        <div class="action-row price-style" style="margin-top:16px;">
+                            <button class="action-btn-price" onclick="saveHomeFlash()">存闪念</button>
+                            <button class="action-btn-price" onclick="saveHomeQuote()">存金句</button>
                         </div>
                     </div>
 
                     <!-- 待处理 -->
-                    <div class="card" id="home-pending" style="cursor:pointer;" onclick="switchScreen('flashes')">
-                        <div class="card-label" style="color:var(--text-dim);">待处理</div>
+                    <div class="card card-pending" id="home-pending" style="cursor:pointer;" onclick="switchScreen('flashes')">
+                        <div class="card-label">待处理</div>
                         <div style="display:flex;align-items:center;justify-content:space-between;">
-                            <span style="font-size:14px;color:var(--text-bright);">闪念收件箱</span>
-                            <span style="font-size:24px;font-weight:700;color:var(--text-dim);" id="pending-count">0</span>
+                            <span style="font-size:14px;color:rgb(135,135,135);">闪念收件箱</span>
+                            <span style="font-size:24px;font-weight:700;color:rgb(135,135,135);" id="pending-count">0</span>
                         </div>
                         <div style="font-size:12px;color:var(--text-dimmer);margin-top:4px;">条闪念等待处理</div>
                     </div>
@@ -715,18 +785,23 @@
 
                     <!-- 手机端按钮 -->
                     <div class="mobile-only">
-                        <div class="action-row">
-                            <button class="action-btn primary" onclick="saveInputFlash()">存闪念</button>
-                            <button class="action-btn" onclick="saveInputQuote()">存金句</button>
+                        <div style="display:flex;justify-content:center;margin-top:24px;">
+                            <button class="action-btn-buy" onclick="switchScreen('home')" style="width:100%;">输入想法</button>
+                        </div>
+                        <div class="action-row price-style" style="margin-top:12px;">
+                            <button class="action-btn-price" onclick="saveInputFlash()">存闪念</button>
+                            <button class="action-btn-price" onclick="saveInputQuote()">存金句</button>
                         </div>
                     </div>
                     <!-- 电脑端按钮 -->
                     <div class="desktop-only">
-                        <div class="action-row" style="gap:10px;">
-                            <button class="action-btn primary" onclick="saveInputFlash()">存闪念</button>
-                            <button class="action-btn" onclick="saveInputQuote()">存金句</button>
-                            <button class="action-btn" onclick="aiRefine()">AI提炼</button>
-                            <button class="action-btn" onclick="openChat()">聊一聊</button>
+                        <div class="action-row price-style" style="margin-top:24px;">
+                            <button class="action-btn-price" onclick="saveInputFlash()">存闪念</button>
+                            <button class="action-btn-price" onclick="saveInputQuote()">存金句</button>
+                        </div>
+                        <div style="display:flex;gap:10px;margin-top:12px;">
+                            <button class="action-btn-buy" onclick="aiRefine()">AI提炼</button>
+                            <button class="action-btn-buy" onclick="openChat()">聊一聊</button>
                         </div>
                     </div>
                 </div>
@@ -861,9 +936,9 @@
                 </div>
 
                 <!-- 编辑删除 -->
-                <div class="action-row" style="margin-top:0;margin-bottom:28px;">
-                    <button class="action-btn" onclick="editQuote()">编辑</button>
-                    <button class="action-btn" style="color:var(--red);border-color:var(--red);" onclick="deleteQuote()">删除</button>
+                <div class="action-row price-style" style="margin-top:0;margin-bottom:28px;">
+                    <button class="action-btn-price" onclick="editQuote()">编辑</button>
+                    <button class="action-btn-price" style="color:var(--red);" onclick="deleteQuote()">删除</button>
                 </div>
 
                 <!-- AI扩展 -->
@@ -1225,9 +1300,9 @@
                             <span class="meta-tag">${f.source || ''}</span>
                             <span style="font-size:11px;color:var(--text-dimmer);">${formatDate(f.createdAt)}</span>
                         </div>
-                        <div class="action-row" style="margin-top:10px;">
-                            <button class="action-btn primary" style="padding:8px;" onclick="flashToQuote('${f.id}')">保存金句</button>
-                            <button class="action-btn" style="padding:8px;color:var(--red);border-color:var(--red);" onclick="deleteFlash('${f.id}')">删除</button>
+                        <div class="action-row price-style" style="margin-top:10px;">
+                            <button class="action-btn-price" style="padding:8px;" onclick="flashToQuote('${f.id}')">保存金句</button>
+                            <button class="action-btn-price" style="padding:8px;color:var(--red);" onclick="deleteFlash('${f.id}')">删除</button>
                         </div>
                     </div>
                 `).join('');
