@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+*.log
+.workbuddy/
+# 开发过程文档，不需要部署
+*.md
+debug-*.html
+test-*.html
+清除缓存.html
+index-pwa.html

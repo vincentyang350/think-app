@@ -1,0 +1,21 @@
+{
+  "name": "Think - 知识管理",
+  "short_name": "Think",
+  "description": "快速记录闪念，AI辅助提炼成金句的知识管理工具",
+  "start_url": "/index-pwa.html",
+  "display": "standalone",
+  "background_color": "#0f0f0f",
+  "theme_color": "#ffd166",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjMGYwZjBmIi8+CjxwYXRoIGQ9Ik05NiA0OEw0OCA5NkwxNDQgOTYiIHN0cm9rZT0iI2ZmZDE2NiIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTk2IDE0NEw5NiA5NkwxNDQgOTYiIHN0cm9rZT0iI2ZmZDE2NiIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "education", "utilities"],
+  "lang": "zh-CN",
+  "dir": "ltr"
+}
