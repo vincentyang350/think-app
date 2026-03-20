@@ -916,6 +916,17 @@
                             <label for="hc-recent">最近项目（仅电脑端）</label>
                         </div>
                     </div>
+
+                    <!-- 数据导入导出 -->
+                    <div class="card" style="cursor:default;">
+                        <div class="card-label">数据管理</div>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <button class="action-btn" onclick="exportData()" style="flex:1;min-width:120px;">导出备份</button>
+                            <button class="action-btn primary" onclick="document.getElementById('import-file').click()" style="flex:1;min-width:120px;">导入数据</button>
+                        </div>
+                        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+                        <div id="import-status" style="font-size:12px;color:var(--text-dimmer);margin-top:8px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1508,6 +1519,135 @@
             if (window.aiService) window.aiService.setApiKey(key);
             document.getElementById('apikey-status').textContent = key ? '已配置' : '未配置';
             alert(key ? 'API Key 保存成功' : 'API Key 已清除');
+        }
+
+        // ===== 数据导入导出 =====
+        function exportData() {
+            const data = {
+                exportedAt: new Date().toISOString(),
+                version: 1,
+                flashes: DB.getFlashes(),
+                quotes: DB.getQuotes(),
+                notes: DB.getNotes(),
+                collections: DB.getCollections()
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `think_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    let importedQuotes = 0;
+                    let importedNotes = 0;
+                    let importedFlashes = 0;
+                    let importedProjects = 0;
+
+                    // 处理新版格式 (insights + outputs)
+                    if (data.insights && Array.isArray(data.insights)) {
+                        const quotes = [];
+                        const notes = [];
+
+                        data.insights.forEach(insight => {
+                            // 取最新版本作为金句内容
+                            const latestVersion = insight.versions?.[insight.versions.length - 1];
+                            if (latestVersion) {
+                                const quoteId = insight.id || genId();
+                                quotes.push({
+                                    id: quoteId,
+                                    content: latestVersion.text,
+                                    category: insight.category || '',
+                                    source: insight.source || '',
+                                    tags: insight.linkedProjects || [],
+                                    createdAt: insight.createdAt || new Date().toISOString()
+                                });
+
+                                // 查找关联的 outputs 作为笔记
+                                if (data.outputs && Array.isArray(data.outputs)) {
+                                    data.outputs
+                                        .filter(o => o.sourceInsightId === insight.id)
+                                        .forEach(o => {
+                                            notes.push({
+                                                id: o.id || genId(),
+                                                quoteId: quoteId,
+                                                type: o.typeLabel || o.type || 'AI扩展',
+                                                content: o.content,
+                                                createdAt: o.createdAt || new Date().toISOString()
+                                            });
+                                        });
+                                }
+                            }
+                        });
+
+                        // 保存金句
+                        if (quotes.length > 0) {
+                            DB.setQuotes(quotes);
+                            importedQuotes = quotes.length;
+                        }
+
+                        // 保存笔记
+                        if (notes.length > 0) {
+                            DB.setNotes(notes);
+                            importedNotes = notes.length;
+                        }
+
+                        // 处理项目
+                        if (data.projects && Array.isArray(data.projects)) {
+                            const collections = data.projects.map(p => ({
+                                id: p.id || genId(),
+                                name: p.name,
+                                description: p.desc || '',
+                                quoteIds: [],
+                                createdAt: p.createdAt || new Date().toISOString()
+                            }));
+                            DB.setCollections(collections);
+                            importedProjects = collections.length;
+                        }
+                    }
+                    // 处理旧版格式 (直接是 flashes/quotes/notes/collections)
+                    else {
+                        if (data.flashes && Array.isArray(data.flashes)) {
+                            DB.setFlashes(data.flashes);
+                            importedFlashes = data.flashes.length;
+                        }
+                        if (data.quotes && Array.isArray(data.quotes)) {
+                            DB.setQuotes(data.quotes);
+                            importedQuotes = data.quotes.length;
+                        }
+                        if (data.notes && Array.isArray(data.notes)) {
+                            DB.setNotes(data.notes);
+                            importedNotes = data.notes.length;
+                        }
+                        if (data.collections && Array.isArray(data.collections)) {
+                            DB.setCollections(data.collections);
+                            importedProjects = data.collections.length;
+                        }
+                    }
+
+                    document.getElementById('import-status').innerHTML = 
+                        `<span style="color:var(--accent)">导入成功！</span> ` +
+                        `金句: ${importedQuotes}, 笔记: ${importedNotes}, 项目: ${importedProjects}${importedFlashes ? ', 闪念: ' + importedFlashes : ''}`;
+
+                    // 刷新当前页面
+                    renderHome();
+
+                } catch (err) {
+                    document.getElementById('import-status').innerHTML = 
+                        `<span style="color:var(--red)">导入失败: ${err.message}</span>`;
+                }
+                input.value = '';
+            };
+            reader.readAsText(file);
         }
 
         // ===== 工具函数 =====
