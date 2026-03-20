@@ -1026,7 +1026,13 @@
         const CATEGORIES = ['品牌', '营销', '媒介', 'AI工具', '设计', '自动'];
         const SOURCES = ['书', '项目', '对话', '观察', '思考', '课程', '自动'];
 
-        // ===== 数据层（localStorage） =====
+        // ===== Supabase 配置 =====
+        const SUPABASE_CONFIG = {
+            url: 'https://ongciurqolxbvfagiuyi.supabase.co',
+            key: 'sb_publishable_xalxX7Dw2SXcig5qrDTaIQ_X4uSpB2y'
+        };
+
+        // ===== 数据层（localStorage + Supabase） =====
         const DB = {
             _get(key) { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } },
             _set(key, val) { localStorage.setItem(key, JSON.stringify(val)); },
@@ -1040,6 +1046,145 @@
             getCollections() { return this._get('think_collections'); },
             setCollections(v) { this._set('think_collections', v); },
         };
+
+        // ===== Supabase 客户端 =====
+        let supabaseClient = null;
+        let useSupabase = false;
+
+        async function initSupabase() {
+            if (!window.supabase) return false;
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+                useSupabase = true;
+                console.log('Supabase 已连接');
+                return true;
+            } catch (e) {
+                console.error('Supabase 连接失败:', e);
+                return false;
+            }
+        }
+
+        // ===== 同步数据到 Supabase =====
+        async function syncToCloud() {
+            if (!useSupabase || !supabaseClient) return;
+            
+            try {
+                const quotes = DB.getQuotes();
+                const flashes = DB.getFlashes();
+                const notes = DB.getNotes();
+                const collections = DB.getCollections();
+
+                // 同步金句
+                for (const q of quotes) {
+                    await supabaseClient.from('quotes').upsert({
+                        id: q.id,
+                        content: q.content,
+                        category: q.category,
+                        source: q.source,
+                        tags: q.tags || [],
+                        created_at: q.createdAt,
+                        updated_at: new Date().toISOString()
+                    });
+                }
+
+                // 同步闪念
+                for (const f of flashes) {
+                    await supabaseClient.from('flashes').upsert({
+                        id: f.id,
+                        content: f.content,
+                        category: f.category,
+                        source: f.source,
+                        created_at: f.createdAt
+                    });
+                }
+
+                // 同步笔记
+                for (const n of notes) {
+                    await supabaseClient.from('notes').upsert({
+                        id: n.id,
+                        content: n.content,
+                        type: n.type,
+                        quote_id: n.quoteId,
+                        created_at: n.createdAt
+                    });
+                }
+
+                // 同步项目
+                for (const c of collections) {
+                    await supabaseClient.from('collections').upsert({
+                        id: c.id,
+                        name: c.name,
+                        description: c.description,
+                        created_at: c.createdAt
+                    });
+                }
+
+                console.log('数据已同步到云端');
+            } catch (e) {
+                console.error('同步失败:', e);
+            }
+        }
+
+        // ===== 从 Supabase 拉取数据 =====
+        async function syncFromCloud() {
+            if (!useSupabase || !supabaseClient) return false;
+            
+            try {
+                // 拉取金句
+                const { data: quotes } = await supabaseClient.from('quotes').select('*');
+                if (quotes && quotes.length > 0) {
+                    DB.setQuotes(quotes.map(q => ({
+                        id: q.id,
+                        content: q.content,
+                        category: q.category,
+                        source: q.source,
+                        tags: q.tags || [],
+                        createdAt: q.created_at
+                    })));
+                }
+
+                // 拉取闪念
+                const { data: flashes } = await supabaseClient.from('flashes').select('*');
+                if (flashes && flashes.length > 0) {
+                    DB.setFlashes(flashes.map(f => ({
+                        id: f.id,
+                        content: f.content,
+                        category: f.category,
+                        source: f.source,
+                        createdAt: f.created_at
+                    })));
+                }
+
+                // 拉取笔记
+                const { data: notes } = await supabaseClient.from('notes').select('*');
+                if (notes && notes.length > 0) {
+                    DB.setNotes(notes.map(n => ({
+                        id: n.id,
+                        content: n.content,
+                        type: n.type,
+                        quoteId: n.quote_id,
+                        createdAt: n.created_at
+                    })));
+                }
+
+                // 拉取项目
+                const { data: collections } = await supabaseClient.from('collections').select('*');
+                if (collections && collections.length > 0) {
+                    DB.setCollections(collections.map(c => ({
+                        id: c.id,
+                        name: c.name,
+                        description: c.description,
+                        createdAt: c.created_at
+                    })));
+                }
+
+                console.log('数据已从云端同步');
+                return true;
+            } catch (e) {
+                console.error('从云端同步失败:', e);
+                return false;
+            }
+        }
 
         // ===== 状态 =====
         let currentScreen = 'home';
@@ -1199,6 +1344,16 @@
             const flashes = DB.getFlashes();
             flashes.unshift(flash);
             DB.setFlashes(flashes);
+            // 同步到云端
+            if (useSupabase && supabaseClient) {
+                supabaseClient.from('flashes').upsert({
+                    id: flash.id,
+                    content: flash.content,
+                    category: flash.category,
+                    source: flash.source,
+                    created_at: flash.createdAt
+                });
+            }
             document.getElementById('home-input').value = '';
             renderHome();
         }
@@ -1217,6 +1372,18 @@
             const quotes = DB.getQuotes();
             quotes.unshift(quote);
             DB.setQuotes(quotes);
+            // 同步到云端
+            if (useSupabase && supabaseClient) {
+                supabaseClient.from('quotes').upsert({
+                    id: quote.id,
+                    content: quote.content,
+                    category: quote.category,
+                    source: quote.source,
+                    tags: quote.tags || [],
+                    created_at: quote.createdAt,
+                    updated_at: new Date().toISOString()
+                });
+            }
             document.getElementById('home-input').value = '';
             renderHome();
         }
@@ -1256,6 +1423,16 @@
             const flashes = DB.getFlashes();
             flashes.unshift(flash);
             DB.setFlashes(flashes);
+            // 同步到云端
+            if (useSupabase && supabaseClient) {
+                supabaseClient.from('flashes').upsert({
+                    id: flash.id,
+                    content: flash.content,
+                    category: flash.category,
+                    source: flash.source,
+                    created_at: flash.createdAt
+                });
+            }
             document.getElementById('input-text').value = '';
             switchScreen('flashes');
         }
@@ -1274,6 +1451,18 @@
             const quotes = DB.getQuotes();
             quotes.unshift(quote);
             DB.setQuotes(quotes);
+            // 同步到云端
+            if (useSupabase && supabaseClient) {
+                supabaseClient.from('quotes').upsert({
+                    id: quote.id,
+                    content: quote.content,
+                    category: quote.category,
+                    source: quote.source,
+                    tags: quote.tags || [],
+                    created_at: quote.createdAt,
+                    updated_at: new Date().toISOString()
+                });
+            }
             document.getElementById('input-text').value = '';
             switchScreen('quotes');
         }
@@ -1335,14 +1524,34 @@
             const quotes = DB.getQuotes();
             quotes.unshift(quote);
             DB.setQuotes(quotes);
+            // 同步金句到云端
+            if (useSupabase && supabaseClient) {
+                supabaseClient.from('quotes').upsert({
+                    id: quote.id,
+                    content: quote.content,
+                    category: quote.category,
+                    source: quote.source,
+                    tags: quote.tags || [],
+                    created_at: quote.createdAt,
+                    updated_at: new Date().toISOString()
+                });
+            }
             // 删除闪念
             DB.setFlashes(flashes.filter(f => f.id !== id));
+            // 同步删除到云端
+            if (useSupabase && supabaseClient) {
+                supabaseClient.from('flashes').delete().eq('id', id);
+            }
             renderFlashes();
         }
         function deleteFlash(id) {
             if (!confirm('确定删除这条闪念？')) return;
             const flashes = DB.getFlashes();
             DB.setFlashes(flashes.filter(f => f.id !== id));
+            // 同步删除到云端
+            if (useSupabase && supabaseClient) {
+                supabaseClient.from('flashes').delete().eq('id', id);
+            }
             renderFlashes();
         }
 
@@ -1401,6 +1610,10 @@
             if (!confirm('确定删除这条金句？')) return;
             const quotes = DB.getQuotes();
             DB.setQuotes(quotes.filter(q => q.id !== currentQuote.id));
+            // 同步删除到云端
+            if (useSupabase && supabaseClient) {
+                supabaseClient.from('quotes').delete().eq('id', currentQuote.id);
+            }
             closeDetail();
         }
 
@@ -1494,6 +1707,16 @@
                 const notes = DB.getNotes();
                 notes.unshift(note);
                 DB.setNotes(notes);
+                // 同步笔记到云端
+                if (useSupabase && supabaseClient) {
+                    supabaseClient.from('notes').upsert({
+                        id: note.id,
+                        content: note.content,
+                        type: note.type,
+                        quote_id: note.quoteId,
+                        created_at: note.createdAt
+                    });
+                }
                 renderDetailNotes();
             } catch (err) {
                 alert('AI扩展失败: ' + err.message);
@@ -1664,7 +1887,7 @@
         }
 
         // ===== 初始化 =====
-        function init() {
+        async function init() {
             // 主题
             const theme = localStorage.getItem('think_theme') || 'dark';
             applyTheme(theme);
@@ -1677,6 +1900,14 @@
                         : ['quick_record', 'pending_flashes', 'recent_collections']
                 ));
             }
+            
+            // 初始化 Supabase 并同步数据
+            await initSupabase();
+            if (useSupabase) {
+                // 先从云端拉取数据
+                await syncFromCloud();
+            }
+            
             // 渲染首页
             renderHome();
         }
