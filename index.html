@@ -1364,7 +1364,7 @@
                 console.log('开始同步闪念到 Supabase:', flash.id);
                 supabaseClient.from('flashes').insert({
                     id: flash.id,
-                    content: flash.content,
+                    content: flash.refinedText || flash.originalText,
                     category: flash.category,
                     source: flash.source,
                     created_at: flash.createdAt
@@ -1456,7 +1456,7 @@
             if (useSupabase && supabaseClient) {
                 supabaseClient.from('flashes').insert({
                     id: flash.id,
-                    content: flash.content,
+                    content: flash.refinedText || flash.originalText,
                     category: flash.category,
                     source: flash.source,
                     created_at: flash.createdAt
