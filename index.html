@@ -1054,6 +1054,7 @@
         async function initSupabase() {
             // 检查 supabase 是否加载 (CDN 加载的是全局 supabase 对象)
             const supabaseLib = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
+            console.log('检查 Supabase 库:', supabaseLib ? '已加载' : '未加载');
             if (!supabaseLib) {
                 console.log('Supabase 库未加载');
                 return false;
@@ -1061,7 +1062,15 @@
             try {
                 supabaseClient = supabaseLib.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
                 useSupabase = true;
-                console.log('Supabase 已连接');
+                console.log('Supabase 客户端已创建');
+                // 测试连接
+                const { data, error } = await supabaseClient.from('flashes').select('count');
+                if (error) {
+                    console.error('Supabase 连接测试失败:', error);
+                    useSupabase = false;
+                    return false;
+                }
+                console.log('Supabase 连接成功，数据表正常');
                 return true;
             } catch (e) {
                 console.error('Supabase 连接失败:', e);
@@ -1350,17 +1359,26 @@
             flashes.unshift(flash);
             DB.setFlashes(flashes);
             // 同步到云端
+            console.log('尝试同步闪念, useSupabase:', useSupabase, 'client:', !!supabaseClient);
             if (useSupabase && supabaseClient) {
+                console.log('开始同步闪念到 Supabase:', flash.id);
                 supabaseClient.from('flashes').insert({
                     id: flash.id,
                     content: flash.content,
                     category: flash.category,
                     source: flash.source,
                     created_at: flash.createdAt
-                }).then(({ error }) => {
-                    if (error) console.error('同步闪念失败:', error);
-                    else console.log('闪念已同步');
+                }).then(({ data, error }) => {
+                    if (error) {
+                        console.error('同步闪念失败:', error);
+                        alert('同步失败: ' + error.message);
+                    } else {
+                        console.log('闪念已同步:', data);
+                        alert('已同步到云端');
+                    }
                 });
+            } else {
+                console.log('Supabase 未启用，跳过同步');
             }
             document.getElementById('home-input').value = '';
             renderHome();
