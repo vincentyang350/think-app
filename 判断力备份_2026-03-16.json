@@ -1,0 +1,91 @@
+{
+  "exportedAt": "2026-03-16T09:13:27.509Z",
+  "version": 1,
+  "insights": [
+    {
+      "id": "i1",
+      "category": "brand",
+      "versions": [
+        {
+          "text": "品牌是受众完成的动作，不是品牌方完成的动作。公司无法\"创建\"品牌，只能影响它的形状。",
+          "date": "2026-03-09T09:11:32.552Z",
+          "status": "confirmed",
+          "confirmedCount": 2
+        }
+      ],
+      "lastTrigger": "2026-03-14T09:11:32.552Z",
+      "triggerCount": 2
+    },
+    {
+      "id": "i2",
+      "category": "marketing",
+      "versions": [
+        {
+          "text": "贵的广告买的是曝光，不贵的营销建的是关系。曝光会衰减，关系会复利。",
+          "date": "2026-03-10T09:11:32.552Z",
+          "status": "confirmed",
+          "confirmedCount": 1
+        }
+      ],
+      "lastTrigger": "2026-03-13T09:11:32.552Z",
+      "triggerCount": 1
+    },
+    {
+      "id": "i3",
+      "category": "marketing",
+      "versions": [
+        {
+          "text": "好的营销不推销产品，而是激活用户的缺失场景。Got Milk 不说牛奶好，只说没牛奶的那一刻。",
+          "date": "2026-03-11T09:11:32.552Z",
+          "status": "seed",
+          "confirmedCount": 0
+        }
+      ],
+      "lastTrigger": null,
+      "triggerCount": 0
+    },
+    {
+      "id": "i4",
+      "category": "ai",
+      "versions": [
+        {
+          "text": "AI 降低了内容生产成本，但没有降低叙事成本。内容越多，有人格的声音越值钱。",
+          "date": "2026-03-12T09:11:32.552Z",
+          "status": "seed",
+          "confirmedCount": 0
+        }
+      ],
+      "lastTrigger": null,
+      "triggerCount": 0
+    },
+    {
+      "id": "i5",
+      "category": "behavior",
+      "versions": [
+        {
+          "text": "游戏让人上瘾的本质：未完成状态的拉力 + 即时反馈 + 可见的成长轨迹 + 清晰的因果规则 + 身份认同。",
+          "date": "2026-03-13T09:11:32.552Z",
+          "status": "seed",
+          "confirmedCount": 0
+        }
+      ],
+      "lastTrigger": null,
+      "triggerCount": 0
+    },
+    {
+      "id": "i6",
+      "category": "media",
+      "versions": [
+        {
+          "text": "注意力是稀缺品，信息不是。所有社媒平台都在把用户注意力打包卖给广告主，这是结构性的，不是偶然的。",
+          "date": "2026-03-14T09:11:32.552Z",
+          "status": "seed",
+          "confirmedCount": 0
+        }
+      ],
+      "lastTrigger": null,
+      "triggerCount": 0
+    }
+  ],
+  "drafts": []
+}
