@@ -1351,12 +1351,15 @@
             DB.setFlashes(flashes);
             // 同步到云端
             if (useSupabase && supabaseClient) {
-                supabaseClient.from('flashes').upsert({
+                supabaseClient.from('flashes').insert({
                     id: flash.id,
                     content: flash.content,
                     category: flash.category,
                     source: flash.source,
                     created_at: flash.createdAt
+                }).then(({ error }) => {
+                    if (error) console.error('同步闪念失败:', error);
+                    else console.log('闪念已同步');
                 });
             }
             document.getElementById('home-input').value = '';
@@ -1379,7 +1382,7 @@
             DB.setQuotes(quotes);
             // 同步到云端
             if (useSupabase && supabaseClient) {
-                supabaseClient.from('quotes').upsert({
+                supabaseClient.from('quotes').insert({
                     id: quote.id,
                     content: quote.content,
                     category: quote.category,
@@ -1387,6 +1390,9 @@
                     tags: quote.tags || [],
                     created_at: quote.createdAt,
                     updated_at: new Date().toISOString()
+                }).then(({ error }) => {
+                    if (error) console.error('同步金句失败:', error);
+                    else console.log('金句已同步');
                 });
             }
             document.getElementById('home-input').value = '';
@@ -1430,12 +1436,14 @@
             DB.setFlashes(flashes);
             // 同步到云端
             if (useSupabase && supabaseClient) {
-                supabaseClient.from('flashes').upsert({
+                supabaseClient.from('flashes').insert({
                     id: flash.id,
                     content: flash.content,
                     category: flash.category,
                     source: flash.source,
                     created_at: flash.createdAt
+                }).then(({ error }) => {
+                    if (error) console.error('同步闪念失败:', error);
                 });
             }
             document.getElementById('input-text').value = '';
@@ -1458,7 +1466,7 @@
             DB.setQuotes(quotes);
             // 同步到云端
             if (useSupabase && supabaseClient) {
-                supabaseClient.from('quotes').upsert({
+                supabaseClient.from('quotes').insert({
                     id: quote.id,
                     content: quote.content,
                     category: quote.category,
@@ -1466,6 +1474,8 @@
                     tags: quote.tags || [],
                     created_at: quote.createdAt,
                     updated_at: new Date().toISOString()
+                }).then(({ error }) => {
+                    if (error) console.error('同步金句失败:', error);
                 });
             }
             document.getElementById('input-text').value = '';
